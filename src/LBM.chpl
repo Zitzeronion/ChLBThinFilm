@@ -42,14 +42,25 @@ Calculating the product u_i*u_i, such (u_x, u_y)*(u_x, u_y) for every lattice no
 proc Dot_prod(ref u:real, ref v:real) : real
 {
     var x: real;        // Store the calculated value
-    x = u*u + v*v;      // Performe the calculation
+    x += u*u + v*v;      // Performe the calculation
     return x;
 }
 
 /*
-Test for Dot_prod
+Tests for Dot_prod
 */
-//proc 
+proc test_Dot_prod_simple(test: borrowed Test) throws
+{
+    var A = [1.0, 1.0];
+    var B = [1.0, 2.0];
+    var C = [2.0, 5.0];
+    test.assertTrue(Dot_prod(A, B) == C);
+} 
+proc test_Dot_prod_zeros(test: borrowed Test) throws
+{
+    var A = [0.0, 0.0];
+    test.assertTrue(Dot_prod(A, A) == A);
+} 
 
 /*
 Procedure for calculating the equilibrium distriubtion
@@ -62,12 +73,14 @@ Procedure for calculating the equilibrium distriubtion
 //     }
 // }
 
-proc main
-{
-    Hello;
-    writeln("Boundary space default values: ", Boundaries(3,3), "\n others: " , Height(2,1), " ", Dist_Eq(1,2,1) );   
-    var A = [1.1, 2.2, 3.3];
-    var B = [1.0, 0.0, 1.0];
-    var C = Dot_prod(A, B);
-    writeln(C);
-}
+// proc main
+// {
+//     Hello;
+//     writeln("Boundary space default values: ", Boundaries(3,3), "\n others: " , Height(2,1), " ", Dist_Eq(1,2,1) );   
+//     var A = [1.1, 2.2, 3.3];
+//     var B = [1.0, 0.0, 1.0];
+//     var C = Dot_prod(A, B);
+//     writeln(C);
+// }
+
+//UnitTest.main();
