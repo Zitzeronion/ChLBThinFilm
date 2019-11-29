@@ -38,40 +38,54 @@ proc Hello
 
 /*
 Calculating the product u_i*u_i, such (u_x, u_y)*(u_x, u_y) for every lattice node
+Below are UnitTests, one for a simple case, the other one if the velocities are zeros
 */
 proc Dot_prod(ref u:real, ref v:real) : real
 {
     var x: real;        // Store the calculated value
-    x += u*u + v*v;      // Performe the calculation
+    x = u*u + v*v;      // Performe the calculation
     return x;
 }
-
-/*
-Tests for Dot_prod
-*/
 proc test_Dot_prod_simple(test: borrowed Test) throws
 {
     var A = [1.0, 1.0];
     var B = [1.0, 2.0];
-    var C = [2.0, 5.0];
-    test.assertTrue(Dot_prod(A, B) == C);
+    var C = [2.0, 5.0];                         // Because 1*1 + 1*1 = 2 and 1*1 + 2*2 = 5 right?
+    test.assertTrue(Dot_prod(A, B) == C);       // If not, you broke it, so fix it!
 } 
 proc test_Dot_prod_zeros(test: borrowed Test) throws
 {
-    var A = [0.0, 0.0];
-    test.assertTrue(Dot_prod(A, A) == A);
+    var A = [0.0, 0.0];                         // Same story, the zero vector should always generate the zero vector
+    test.assertTrue(Dot_prod(A, A) == A);       // Works fine
 } 
 
+//############################################ Code good up tpo here ############################################//
+// Gona fix that tomorrow....
+// Good night for today!
 /*
 Procedure for calculating the equilibrium distriubtion
 */
-// proc deriveEquilibrium(ref elevation: real, ref vel_x: real, ref vel_y: real, lat_x: int, lat_y: int, weight: real, gravity: real)
-// {
-//     var f :[0..9,1..Ly,1..Lx] real;
-//     for i in {1..9}{
-//         writeln("blub");
-//     }
-// }
+proc deriveEquilibrium(elevation, vel_x, vel_y: [?D] real, X, Y: int)
+{
+    var f : [1..3,1..Y,1..X] real; 
+    var gravity = 0.0;
+    forall (i,j) in D
+    {
+        f[1,i,j] = 4/9 * elevation[i,j] * (9/4 - 15/8 * gravity * elevation[i,j] - 3/2 * Dot_prod(vel_x[i,j], vel_y[i,j]));
+    }
+    writeln("Feq by proc: \n", f);
+    return f;
+}
+proc test_Eq_dist_basic(test: borrowed Test) throws
+{
+    var L = 4;
+    var h,
+        u : [1..L,1..L] real;
+    h = 1.0;
+    writeln("Print h: \n", h, "\n");
+    writeln("Print feq: \n",deriveEquilibrium(h,u,u,L,L), "\n");
+    test.assertTrue(deriveEquilibrium(h,u,u,L,L) == h);
+}
 
 // proc main
 // {
@@ -83,4 +97,4 @@ Procedure for calculating the equilibrium distriubtion
 //     writeln(C);
 // }
 
-//UnitTest.main();
+UnitTest.main();
