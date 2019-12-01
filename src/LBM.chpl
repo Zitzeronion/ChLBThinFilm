@@ -66,7 +66,7 @@ proc deriveEquilibrium(Elevation, Vel_x, Vel_y: [?D] real, gravity : real, X, Y:
     var Weight = [4.0/9.0, 1.0/9.0, 1.0/9.0, 1.0/9.0, 1.0/9.0, 1.0/36.0, 1.0/36.0, 1.0/36.0, 1.0/36.0];     // Set of D2Q9 standard weights
     var Lattice_vel_x = [0, 1, 0, -1, 0, 1, -1, -1, 1];                                         // Set of lattice velocities in X
     var Lattice_vel_y = [0, 0, 1, 0, -1, 1, 1, -1, -1];                                         // Set of lattice velocities in Y
-    f = 1.0;
+    Dist_f = 1.0;
     forall (y_i,x_i) in D               // Do it for the zeroth lattice velocity
     {
         Dist_f(1,y_i,x_i) = Weight(1) * Elevation(y_i,x_i) * (9.0/4.0 - 15.0/8.0 * gravity * Elevation(y_i,x_i) 
@@ -74,12 +74,13 @@ proc deriveEquilibrium(Elevation, Vel_x, Vel_y: [?D] real, gravity : real, X, Y:
     }
     forall (q_i,y_i,x_i) in {2..9,1..Y,1..X} // And for the remaining 8 lattice velocities
     {
-        Dist_f(q_i,y_i,x_i) = Weight(q_i) * Elevation(y_i,x_i) * (3.0/2.0 * gravity * Elevation(y_i,x_j) 
-                                                                 + 3.0 * (Lattice_vel_x(q_i) * Vel_x(y_i,x_i) + Lattice_vel_y(q_i) * Vel_y(y_i,x_i)
-                                                                 + 9.0/2.0 * ) 
+        Dist_f(q_i,y_i,x_i) = Weight(q_i) * Elevation(y_i,x_i) * (3.0/2.0 * gravity * Elevation(y_i,x_i) 
+                                                                  + 3.0 * (Lattice_vel_x(q_i) * Vel_x(y_i,x_i) + Lattice_vel_y(q_i) * Vel_y(y_i,x_i))
+                                                                  + 9.0/2.0 * (Lattice_vel_x(q_i) * Vel_x(y_i,x_i)) * (Lattice_vel_y(q_i) * Vel_y(y_i,x_i))
+                                                                  - 3.0/2.0 * Dot_prod(Vel_x(y_i,x_i),Vel_y(y_i,x_i))); 
     }
     
-    return f;
+    return Dist_f;
 }
 proc test_Eq_dist_nogravity_novelocity(test: borrowed Test) throws
 {
