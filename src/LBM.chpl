@@ -1,14 +1,10 @@
-use Time;
+use Time, IO.FormattedIO;
 use UnitTest;
 
 config const Lx = 512,          // Spatial lattice extension in X
              Ly = 512,          // Spatial lattice extension in Y
              Q = 9;             // Number of lattice velocities
              //gravity = 0.1;     // Value of gravitational forcing
-
-var weight = [4/9, 1/9, 1/9, 1/9, 1/9, 1/36, 1/36, 1/36, 1/36];     // Set of D2Q9 standard weights
-var lattice_x = [0, 1, 0, -1, 0, 1, -1, -1, 1];                     // Set of lattice velocities in X
-var lattice_y = [0, 0, 1, 0, -1, 1, 1, -1, -1];                     // Set of lattice velocities in Y
 
 var DistSpace : domain(3) = {0..Q,1..Ly,1..Lx};     // Domain used to map the distribution functions
 var FluidSpace : domain(2) = {1..Ly,1..Lx};         // Domain used to map the fluid
@@ -96,15 +92,18 @@ proc test_Eq_dist_nogravity_novelocity(test: borrowed Test) throws
 proc test_Eq_dist_basic(test: borrowed Test) throws
 {
     var L = 4;                                      // Create a small test area
-    var g = 6.0/60;                                 // Test without gravity
-    var check_eq : [1..Q,1..L,1..L] real;           // Generate an array similar to f_eq
+    var g = 6.0/50;                                 // Test without gravity
+    var check_eq,
+        answer : [1..Q,1..L,1..L] real;           // Generate an array similar to f_eq
     var h,                                          // h = height field
-        u,                                          // u = velocity field
-        answer : [1..L,1..L] real;                  // analytical solution     
+        u : [1..L,1..L] real;                  // analytical solution     
     h(2,1) = 1.0;                                   // Set only one value different to test it!
-    answer(2,1) = 0.9;
-    check_eq = deriveEquilibrium(h,u,u,g,L,L);          // Calculate the equilibrium without gravity and velocity  
-    test.assertTrue(check_eq[1,1..L,1..L] == answer);   // Test it
+    answer(1,2,1) = 0.9;
+    check_eq = deriveEquilibrium(h,u,u,g,L,L);          // Calculate the equilibrium without gravity and velocity 
+    writeln("For g != 0 we get \n", check_eq[1,1..L,1..L], "\n Answers: \n", answer);
+    writef("%{.########}\n",check_eq(1,2,1));
+    writef("%{.########}\n",answer(1,2,1));
+    test.assertLessThan(check_eq(1,2,1),answer(1,2,1));   // Test it
 }
 
 // proc main
