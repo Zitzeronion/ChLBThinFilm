@@ -100,10 +100,10 @@ proc test_Eq_dist_basic(test: borrowed Test) throws
     h(2,1) = 1.0;                                   // Set only one value different to test it!
     answer(1,2,1) = 0.9;
     check_eq = deriveEquilibrium(h,u,u,g,L,L);          // Calculate the equilibrium without gravity and velocity 
-    writeln("For g != 0 we get \n", check_eq[1,1..L,1..L], "\n Answers: \n", answer);
-    writef("%{.########}\n",check_eq(1,2,1));
-    writef("%{.########}\n",answer(1,2,1));
-    test.assertLessThan(check_eq(1,2,1),answer(1,2,1));   // Test it
+    writeln("For g != 0 we get \n", check_eq);
+    //writef("%{.########}\n",check_eq(1,2,1));
+    //writef("%{.########}\n",answer(1,2,1));
+    test.assertLessThan(check_eq(1,1..L,1..L),answer(1,1..L,1..L));   // Test it
 }
 
 // proc main
