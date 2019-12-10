@@ -99,11 +99,13 @@ proc test_Eq_dist_basic(test: borrowed Test) throws
         u : [1..L,1..L] real;                  // analytical solution     
     h(2,1) = 1.0;                                   // Set only one value different to test it!
     answer(1,2,1) = 0.9;
+    for i in 2..5 do
+        answer(i,2,1) = 1.0/50.0;
+    for i in 6..Q do
+        answer(i,2,1) = 1.0/200.0;
     check_eq = deriveEquilibrium(h,u,u,g,L,L);          // Calculate the equilibrium without gravity and velocity 
     writeln("For g != 0 we get \n", check_eq);
-    //writef("%{.########}\n",check_eq(1,2,1));
-    //writef("%{.########}\n",answer(1,2,1));
-    test.assertLessThan(check_eq(1,1..L,1..L),answer(1,1..L,1..L));   // Test it
+    test.assertLessThan(check_eq,answer);   // Test it
 }
 
 // proc main
