@@ -105,7 +105,7 @@ proc test_Eq_dist_basic(test: borrowed Test) throws
         answer(i,2,1) = 1.0/200.0;
     check_eq = deriveEquilibrium(h,u,u,g,L,L);          // Calculate the equilibrium without gravity and velocity 
     writeln("For g != 0 we get \n", check_eq);
-    test.assertLessThan(check_eq,answer);   // Test it
+    test.assertLessThan(check_eq,answer);               // Test it
 }
 
 // proc main
