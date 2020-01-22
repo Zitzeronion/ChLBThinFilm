@@ -17,6 +17,7 @@ var Height,                                     // Array to store the height fie
     Pressure,                                   // Array to store the pressure  
     Forces : [FluidSpace] real;              // Array to add up multiple forces
 
+blub
 var Dist_Eq,                                    // Array to store the equilibrium distribution function, see e.g. Salom LBM shallow water paper 
     Dist_Tmp,                                   // Array to store the distribution function from the previous time step, important for tau != 1
     Dist_Out : [DistSpace] real;             // Array to store the distribution which is computed 
